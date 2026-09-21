@@ -57,7 +57,7 @@ function clearSession() { sessionStorage.removeItem(SESSION_KEY); }
 
 const user = getSession();
 if (!user) {
-  location.href = 'login.html';
+  location.href = 'index.html';
 } else {
   const isAdmin = user.role === 'admin';
   const canSeeFinPerf = isAdmin || user.companyKey === 'oceaneeds';
@@ -70,7 +70,7 @@ if (!user) {
   finCard.onclick = canSeeFinPerf ? () => { location.href = 'financial-performance-oceaneeds.html'; } : null;
 
   document.getElementById('chooseBoardPack').onclick = () => { location.href = 'dashboard.html'; };
-  document.getElementById('chooserLogout').onclick = () => { clearSession(); location.href = 'login.html'; };
+  document.getElementById('chooserLogout').onclick = () => { clearSession(); location.href = 'index.html'; };
 }
 </script>
 </body>
