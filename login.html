@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in · Group Board Pack</title>
+<style>
+*{box-sizing:border-box; margin:0; padding:0;}
+body{
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+  background:
+    radial-gradient(1100px 560px at 88% -12%, rgba(56,189,248,.26), transparent 60%),
+    radial-gradient(900px 500px at -8% 36%, rgba(14,165,233,.14), transparent 62%),
+    radial-gradient(1000px 520px at 50% 112%, rgba(186,230,253,.40), transparent 60%),
+    linear-gradient(180deg, #F7FBFF, #E9F2FC 45%, #F7FBFF);
+  color:#0B2540;
+}
+.card{width:340px; background:#fff; border:1px solid #D8E7F5; border-radius:22px; padding:32px 30px; box-shadow:0 18px 44px rgba(2,64,120,.10);}
+.card h1{font-size:20px; font-weight:800; color:#0B2540; margin:0 0 4px;}
+.card .sub{font-size:12px; color:#5B7A99; font-weight:600; margin-bottom:20px;}
+.card label{display:block; font-size:11.5px; font-weight:700; color:#5B7A99; margin-top:12px; margin-bottom:4px;}
+.card input{width:100%; padding:10px 12px; border:1px solid #D8E7F5; border-radius:10px; font-size:13.5px; box-sizing:border-box; font-family:inherit;}
+.card .error{margin-top:12px; font-size:12.5px; color:#DC2626; font-weight:600; min-height:16px;}
+.card button{width:100%; margin-top:20px; padding:11px; border:0; border-radius:999px; background:linear-gradient(90deg,#0284C7,#0EA5E9); color:#fff; font-weight:800; font-size:13.5px; cursor:pointer; font-family:inherit;}
+.card button:hover{opacity:.92;}
+</style>
+</head>
+<body>
+
+<form class="card" id="loginForm">
+  <h1>Group Board Pack</h1>
+  <div class="sub">Sign in to continue</div>
+  <label>Username</label>
+  <input id="loginUser" autocomplete="username" required autofocus>
+  <label>Password</label>
+  <input id="loginPass" type="password" autocomplete="current-password" required>
+  <div class="error" id="loginError"></div>
+  <button type="submit">Sign in</button>
+</form>
+
+<script>
+// Hard-coded credentials -- no backend in this version. See boot()/showDashboard()
+// in dashboard.html for how each user's data gets scoped after they sign in.
+const USERS = [
+  { username: 'ceyline_shipping',    password: 'Test@321',  role: 'company', companyKey: 'ceyline_shipping' },
+  { username: 'ceyline_maritime',    password: 'Test@321',  role: 'company', companyKey: 'ceyline_maritime' },
+  { username: 'msts',                password: 'Test@321',  role: 'company', companyKey: 'msts' },
+  { username: 'ceyline_engineering', password: 'Test@321',  role: 'company', companyKey: 'ceyline_engineering' },
+  { username: 'oceaneeds',           password: 'Test@321',  role: 'company', companyKey: 'oceaneeds' },
+  { username: 'ceyline_agencies',    password: 'Test@321',  role: 'company', companyKey: 'ceyline_agencies' },
+  { username: 'cargoserv',           password: 'Test@321',  role: 'company', companyKey: 'cargoserv' },
+  { username: 'cma_ships',           password: 'Test@321',  role: 'company', companyKey: 'cma_ships' },
+  { username: 'starlink',            password: 'Test@321',  role: 'company', companyKey: 'starlink' },
+  { username: 'califolink',          password: 'Test@321', role: 'company', companyKey: 'califolink' },
+  { username: 'cinec',               password: 'Test@321', role: 'company', companyKey: 'cinec' },
+  { username: 'ceyline_travels',     password: 'Test@321', role: 'company', companyKey: 'ceyline_travels' },
+  { username: 'ruwala',              password: 'Test@321', role: 'company', companyKey: 'ruwala' },
+  { username: 'gcey',                password: 'Test@321', role: 'company', companyKey: 'gcey' },
+
+  { username: 'admin1', password: '321@test', role: 'admin', companyKey: null },
+  { username: 'admin2', password: '321@test', role: 'admin', companyKey: null }
+];
+
+const SESSION_KEY = 'bbp_session_user';
+function setSession(user) { sessionStorage.setItem(SESSION_KEY, JSON.stringify(user)); }
+function getSession() { try { return JSON.parse(sessionStorage.getItem(SESSION_KEY)); } catch { return null; } }
+
+// Already signed in? Skip straight to the chooser instead of asking again.
+if (getSession()) { location.href = 'chooser.html'; }
+
+document.getElementById('loginForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const username = document.getElementById('loginUser').value.trim();
+  const password = document.getElementById('loginPass').value;
+  const match = USERS.find(u => u.username === username && u.password === password);
+  const errorEl = document.getElementById('loginError');
+  if (!match) { errorEl.textContent = 'Wrong username or password.'; return; }
+  errorEl.textContent = '';
+  const { password: _drop, ...safe } = match; // don't keep the password in sessionStorage
+  setSession(safe);
+  location.href = 'chooser.html';
+});
+</script>
+</body>
+</html>
