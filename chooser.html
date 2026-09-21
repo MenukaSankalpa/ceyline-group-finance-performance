@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Choose · Group Board Pack</title>
+<style>
+*{box-sizing:border-box; margin:0; padding:0;}
+body{
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+  background:
+    radial-gradient(1100px 560px at 88% -12%, rgba(56,189,248,.26), transparent 60%),
+    radial-gradient(900px 500px at -8% 36%, rgba(14,165,233,.14), transparent 62%),
+    radial-gradient(1000px 520px at 50% 112%, rgba(186,230,253,.40), transparent 60%),
+    linear-gradient(180deg, #F7FBFF, #E9F2FC 45%, #F7FBFF);
+  color:#0B2540;
+}
+.wrap{text-align:center;}
+.wrap h1{font-size:22px; font-weight:800; color:#0B2540; margin:0 0 6px;}
+.wrap .who{font-size:12.5px; color:#5B7A99; font-weight:700; margin-bottom:24px;}
+.cards{display:flex; gap:22px; justify-content:center; flex-wrap:wrap;}
+.card{width:220px; background:#fff; border:1px solid #D8E7F5; border-radius:20px; padding:28px 20px; box-shadow:0 18px 44px rgba(2,64,120,.10); cursor:pointer; transition:transform .15s ease;}
+.card:hover{transform:translateY(-4px);}
+.card.disabled{opacity:.4; cursor:not-allowed;}
+.card.disabled:hover{transform:none;}
+.card .ic{font-size:34px; margin-bottom:10px;}
+.card .t{font-size:14.5px; font-weight:800; color:#0B2540;}
+.card .s{font-size:11.5px; color:#5B7A99; margin-top:6px; line-height:1.5;}
+#chooserLogout{margin-top:26px; background:none; border:0; color:#0284C7; font-weight:700; font-size:12.5px; cursor:pointer; font-family:inherit;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>What would you like to open?</h1>
+  <div class="who" id="whoLine">—</div>
+  <div class="cards">
+    <div class="card" id="chooseBoardPack">
+      <div class="ic">📊</div>
+      <div class="t">Board Pack</div>
+      <div class="s">P&amp;L, cash flow, balance sheet across the group</div>
+    </div>
+    <div class="card" id="chooseFinPerf">
+      <div class="ic">📈</div>
+      <div class="t">Financial Performance</div>
+      <div class="s">Detailed monthly review — Oceaneeds</div>
+    </div>
+  </div>
+  <button id="chooserLogout">Sign out</button>
+</div>
+
+<script>
+const SESSION_KEY = 'bbp_session_user';
+function getSession() { try { return JSON.parse(sessionStorage.getItem(SESSION_KEY)); } catch { return null; } }
+function clearSession() { sessionStorage.removeItem(SESSION_KEY); }
+
+const user = getSession();
+if (!user) {
+  location.href = 'login.html';
+} else {
+  const isAdmin = user.role === 'admin';
+  const canSeeFinPerf = isAdmin || user.companyKey === 'oceaneeds';
+
+  document.getElementById('whoLine').textContent =
+    isAdmin ? 'Signed in as admin' : `Signed in as ${user.companyKey}`;
+
+  const finCard = document.getElementById('chooseFinPerf');
+  finCard.classList.toggle('disabled', !canSeeFinPerf);
+  finCard.onclick = canSeeFinPerf ? () => { location.href = 'financial-performance-oceaneeds.html'; } : null;
+
+  document.getElementById('chooseBoardPack').onclick = () => { location.href = 'dashboard.html'; };
+  document.getElementById('chooserLogout').onclick = () => { clearSession(); location.href = 'login.html'; };
+}
+</script>
+</body>
+</html>
